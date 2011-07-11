@@ -1,0 +1,105 @@
+s9e\Acl\Tests\RoleCache
+ [x] Simple role
+ [x] Add does not overwrite roles by default
+ [x] Cached roles can be overwritten
+ [x] Get on inexistent role throws an exception
+ [x] Exists
+ [x] Clear
+ [x] Remove
+
+s9e\Acl\Tests\Rules
+ [x] Global grant
+ [x] Local grant
+ [x] Grant does not override global deny
+ [x] Grant does not override local deny
+ [x] Granted perms can grant other perms
+ [x] Fulfilled require does not interfere
+ [x] Unfulfilled require unsets perm
+ [x] Revoked grants cannot grant other perms
+ [x] Revoked grants cannot grant other perms no matter how indirectly
+ [x] Revoked grants do not interfere with other grants
+ [x] Require on a perm with different dimensions
+
+s9e\Acl\Tests\AdvancedForumAcl
+ [x] Forum stuff
+
+s9e\Acl\Tests\Basic
+ [x] One global perm
+ [x] Multi global perms
+ [x] Unknown perms return false
+ [x] Deny overrides allow
+ [x] Reader can be serialized without losing stuff
+ [x] Reader rejects non array scope
+ [x] Acl rejects non array scope
+ [x] Acl throws an exception on invalid scope values
+ [x] Acl allow is chainable
+ [x] Acl deny is chainable
+ [x] Acl add rule is chainable
+ [x] Acl import is chainable
+ [x] Acl accepts boolean scope values
+ [x] Reader works with boolean scope values
+ [x] Acl accepts float scope values
+ [x] Reader works with float scope values
+ [x] Acl does not return stale results after allow
+ [x] Acl does not return stale results after add rule
+ [x] Children acl are invalidated
+ [x] Additional scope is added to scope by reader
+ [x] Additional scope does not overwrite the original scope
+
+s9e\Acl\Tests\Internals
+ [x] Identical perms are optimized away
+ [x] Identical scopes are optimized away
+ [x] Empty global perms are optimized away
+ [x] Empty local perms are optimized away
+ [x] Scopes identical to global are optimized away
+ [x] Global perms at position zero are optimized away
+ [x] Local perms at position zero are optimized away
+ [x] Perm is optimized away to another space if it is not alone in new space
+ [x] Merged masks
+
+s9e\Acl\Tests\Predicate
+ [x] Predicate some
+ [x] Acl can be queried for predicate directly
+ [x] Predicate all but
+ [x] Predicate all
+ [x] Predicate none
+ [x] Predicate none on unknown perm
+ [x] Predicate with scope
+ [x] Predicate with local wildcard scope
+ [x] Predicate with global wildcard scope
+ [x] Global setting with local scope
+ [x] Expected predicate all with local scope
+ [x] Predicate with same scope throws an exception
+ [x] Predicate with non array not wildcard scope throws an exception
+
+s9e\Acl\Tests\XML
+ [x] A c l can be queried in x m l
+ [x] X m l reader supports wildcard as scope value
+ [x] X m l reader supports wildcard as scope
+ [x] X m l reader supports resources as scope
+ [x] X m l reader rejects invalid scopes
+
+s9e\Acl\Tests\Role
+ [x] Simple role
+
+s9e\Acl\Tests\Resource
+ [x] Get predicate
+
+s9e\Acl\Tests\ManualExamples
+ [x] Scoping
+ [x] Precedence
+ [x] Rules
+ [x] Roles
+ [x] Resources
+
+s9e\Acl\Tests\Scoping
+ [x] Global deny overrides local allow
+ [x] Local deny overrides global allow
+ [x] Unknown scope defaults to global scope
+ [x]  2 d inherits from 1 d
+ [x] Global wildcard on 2 d allow
+ [x]  2 d wildcard on 2 d allow
+ [x]  1 d wildcard on 2 d allow
+ [x] Wildcard on 3 d allow
+ [x] Wildcard on unknown scope defaults to global
+
