@@ -485,7 +485,6 @@ class Acl
 				$usedScopes[$dim][$scopeVal] = $scopeVal;
 			}
 
-			self::$unserializeCache[$k] = $scope;
 			$acl[$perm][$k] = $value;
 		}
 
@@ -595,7 +594,7 @@ class Acl
 				}
 
 				/**
-				* Make sure the second dimension of the array is indexed numerically
+				* Make sure the second dimension of the array is numerically indexed
 				*/
 				$spaceVals = array_map('array_values', $spaceVals);
 
