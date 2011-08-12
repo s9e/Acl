@@ -1208,14 +1208,11 @@ class Acl
 				{
 					$scopeAliases[$scopeDim][array_shift($scopeVals)] = $scopeVals;
 
-					foreach ($scopeVals as $scopeVal)
+					foreach ($acl as $perm => &$settings)
 					{
-						foreach ($acl as $perm => &$settings)
-						{
-							self::removeSettingsByScopeVal($settings, $scopeDim, $scopeVal);
-						}
-						unset($settings);
+						self::removeSettingsByScopeVals($settings, $scopeDim, $scopeVals);
 					}
+					unset($settings);
 				}
 			}
 		}
@@ -1356,6 +1353,30 @@ class Acl
 		{
 			if (isset(self::$unserializeCache[$scopeKey][$scopeDim])
 			 && self::$unserializeCache[$scopeKey][$scopeDim] === $scopeVal)
+			{
+				unset($settings[$scopeKey]);
+			}
+		}
+	}
+
+	/**
+	* Remove all settings that match any scope value from given list, in place
+	*
+	* @param  array  &$settings
+	* @param  string $scopeDim
+	* @param  array  $scopeVals
+	* @return void
+	*/
+	static protected function removeSettingsByScopeVals(array &$settings, $scopeDim, array $scopeVals)
+	{
+		$scopeVals = array_flip($scopeVals);
+
+		foreach ($settings as $scopeKey => $setting)
+		{
+			if (isset(
+				self::$unserializeCache[$scopeKey][$scopeDim],
+				$scopeVals[self::$unserializeCache[$scopeKey][$scopeDim]]
+			))
 			{
 				unset($settings[$scopeKey]);
 			}
