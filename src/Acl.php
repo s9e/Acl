@@ -626,10 +626,7 @@ class Acl
 						$tmp = $scope;
 						unset($tmp[$scopeDim]);
 
-						$tmpKey = serialize($tmp);
-
-						self::$inherit[$scopeKey][$scopeDim] = $tmpKey;
-						self::$unserializeCache[$tmpKey]     = $tmp;
+						self::$inherit[$scopeKey][$scopeDim] = serialize($tmp);
 					}
 
 					$bootstrap[$scopeKey] = null;
