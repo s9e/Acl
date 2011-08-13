@@ -53,6 +53,10 @@ class Acl
 	const ALLOW = 1;
 	const DENY  = 0;
 
+	//==========================================================================
+	// Public methods
+	//==========================================================================
+
 	/**
 	* Grant a permission in given scope
 	*
@@ -103,6 +107,11 @@ class Acl
 		return $this;
 	}
 
+	/**
+	* Automatically load, create and return an instance of Reader
+	*
+	* @return Reader
+	*/
 	public function getReader()
 	{
 		if (isset($this->reader))
@@ -128,36 +137,6 @@ class Acl
 		return self::asXML($this->buildSpaces());
 	}
 
-	public function getSettings($includeParents = true)
-	{
-		$combinedSettings = $this->settings;
-
-		if ($includeParents)
-		{
-			foreach ($this->parents as $parent)
-			{
-				$combinedSettings = array_merge($combinedSettings, $parent->getSettings());
-			}
-		}
-
-		return $combinedSettings;
-	}
-
-	public function getRules($includeParents = true)
-	{
-		$combinedRules = $this->rules;
-
-		if ($includeParents)
-		{
-			foreach ($this->parents as $parent)
-			{
-				$combinedRules = array_merge_recursive($combinedRules, $parent->getRules());
-			}
-		}
-
-		return $combinedRules;
-	}
-
 	public function addParent(Acl $acl)
 	{
 		$this->parents[] = $acl;
@@ -175,6 +154,40 @@ class Acl
 	public function getPredicate($perm, $dim, $scope = array())
 	{
 		return $this->getReader()->getPredicate($perm, $dim, $scope);
+	}
+
+	//==============================================================================================
+	// INTERNAL STUFF
+	//==============================================================================================
+
+	protected function getSettings($includeParents = true)
+	{
+		$combinedSettings = $this->settings;
+
+		if ($includeParents)
+		{
+			foreach ($this->parents as $parent)
+			{
+				$combinedSettings = array_merge($combinedSettings, $parent->getSettings());
+			}
+		}
+
+		return $combinedSettings;
+	}
+
+	protected function getRules($includeParents = true)
+	{
+		$combinedRules = $this->rules;
+
+		if ($includeParents)
+		{
+			foreach ($this->parents as $parent)
+			{
+				$combinedRules = array_merge_recursive($combinedRules, $parent->getRules());
+			}
+		}
+
+		return $combinedRules;
 	}
 
 	//==============================================================================================
