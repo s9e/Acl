@@ -539,7 +539,10 @@ class Acl
 							$permDims[$trgPerm] = $acl[$trgPerm] = array();
 						}
 
-						$permDims[$trgPerm] += $permDims[$perm];
+						/**
+						* @todo TEST ME
+						*/
+						$permDims[$trgPerm] += $permDims[$srcPerm];
 					}
 				}
 			}
