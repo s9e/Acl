@@ -37,7 +37,7 @@ class ManualExamplesTest extends \PHPUnit_Framework_TestCase
 		preg_match_all('#;\\s+// (bool\\((true|false)\\))#', $m[1], $m);
 
 		$expected = implode("\n", $m[1]);
-		$actual   = trim(ob_get_contents());
+		$actual   = trim(preg_replace('#\\x1B\\[\\d+m#', '', ob_get_contents()));
 
 		$this->assertSame($expected, $actual);
 	}
