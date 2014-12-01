@@ -49,13 +49,15 @@ class Matrix
 	protected $matrixSize;
 
 	/**
-	* @var array Offset of each scope value
+	* @var array Offsets of each scope value, grouped by dimension name
 	*/
 	protected $offsets;
 
 	/**
-	* 
+	* Constructor
 	*
+	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @param  array $rules    "grant" and "require" as keys, [source => targets] as values
 	* @return void
 	*/
 	public function __construct(array $settings, array $rules)
@@ -66,9 +68,11 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Return the generated bitfield for each action
 	*
-	* @return array
+	* The bitfields are represented as strings made of 0s and 1s
+	*
+	* @return array Actions as keys, bitfields as values
 	*/
 	public function getBitfields()
 	{
@@ -82,9 +86,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Return the offsets of each dimension's scope values
 	*
-	* @return array
+	* @return array Dimensions' names as keys, arrays of [scope value => offset] as values
 	*/
 	public function getOffsets()
 	{
@@ -92,13 +96,11 @@ class Matrix
 	}
 
 	/**
-	* 
-	// The target perm's setting is either self::ALLOW, in which case there's
-	// nothing to do, or self::DENY, which can't be overwritten anyway.
-	//
-	// We also check whether the target perm has been granted during this
-	// iteration. If it was, we record all the grantors so that we only revoke
-	// the target perm if ALL of them get revoked.
+	* Apply given grant rule to every permission
+	*
+	* Grant rules are applied when there's no setting for a permission. If a permission is already
+	* set, it's either allowed and we don't have to do anything or it's denied and we must not
+	* override it. The method records which permissions were granted by which, and vice-versa
 	*
 	* @param  string $srcAction Source action (grantor)
 	* @param  string $trgAction Target action (grantee)
@@ -126,8 +128,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Apply all given grant rules
 	*
+	* @param  array Source actions as keys, target actions as values
 	* @return void
 	*/
 	protected function applyGrantRules(array $rules)
@@ -137,7 +140,7 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Apply inheritance to every permission
 	*
 	* @return void
 	*/
@@ -165,8 +168,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Apply all given require rules
 	*
+	* @param  array Source actions as keys, target actions as values
 	* @return void
 	*/
 	protected function applyRequireRules(array $rules)
@@ -179,7 +183,7 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Apply given require rule to every permission
 	*
 	* @param  string $srcAction Source action
 	* @param  string $trgAction Target action (the required permission)
@@ -206,8 +210,10 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Apply given set of rules to the ACL using given method
 	*
+	* @param  string $methodName Method's name
+	* @param  array  Source actions as keys, target actions as values
 	* @return void
 	*/
 	protected function applyRules($methodName, array $rules)
@@ -305,8 +311,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Compute the scope offsets
 	*
+	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
 	* @return void
 	*/
 	protected function computeOffsets(array $settings)
@@ -330,9 +337,10 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Collect all scope values from given settings
 	*
-	* @return array
+	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @return array           Dimensions' names as keys, arrays of [scope value => offset] as values
 	*/
 	protected function collectScopes(array $settings)
 	{
@@ -358,8 +366,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Fill the matrix with given settings
 	*
+	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
 	* @return void
 	*/
 	protected function fillMatrix(array $settings)
@@ -387,8 +396,11 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Fill the wildcard bits of given action's permissions
 	*
+	* @param  string   $action     Action's name
+	* @param  integer  $base       Base index (coordinate for the global setting in given scope)
+	* @param  string[] $dimensions Dimensions for which to fill the wildcard bits
 	* @return void
 	*/
 	protected function fillWildcardBits($action, $base, array $dimensions)
@@ -417,9 +429,9 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Initialize the ACL matrix for each given action
 	*
-	* @param  string[] $actions
+	* @param  string[] $actions Action names
 	* @return void
 	*/
 	protected function resetMatrix(array $actions)
@@ -438,8 +450,11 @@ class Matrix
 	}
 
 	/**
-	* 
+	* Solve this matrix
 	*
+	* Will apply inheritance and given rules, then set the wildcard bits
+	*
+	* @param  array $rules    "grant" and "require" as keys, [source => targets] as values
 	* @return void
 	*/
 	protected function solve(array $rules)
