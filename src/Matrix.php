@@ -188,11 +188,11 @@ class Matrix
 	protected function applyRequireRule($srcAction, $trgAction)
 	{
 		$revoked = false;
-		foreach (array_filter($this->acl[$srcAction]) as $k => &$setting)
+		foreach (array_filter($this->acl[$srcAction]) as $k => $setting)
 		{
 			if ($this->acl[$trgAction][$k] !== self::ALLOW)
 			{
-				$setting = $this->acl[$trgAction][$k];
+				$this->acl[$srcAction][$k] = $this->acl[$trgAction][$k];
 				$revoked = true;
 
 				if (isset($this->grantees[$srcAction][$k]))
