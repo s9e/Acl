@@ -1,0 +1,16 @@
+{
+	"name": "s9e/acl",
+	"type": "library",
+	"description": "",
+	"homepage": "https://github.com/s9e/Acl/",
+	"keywords": ["acl","permissions"],
+	"license": "MIT",
+	"require": {
+		"php":        ">=5.4"
+	},
+	"autoload": {
+		"psr-4": {
+			"s9e\\Acl\\": "src"
+		}
+	}
+}
