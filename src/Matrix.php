@@ -133,21 +133,7 @@ class Matrix
 	protected function applyGrantRules(array $rules)
 	{
 		$this->grantees = $this->grantors = [];
-		do
-		{
-			$continue = false;
-			foreach ($rules as $srcAction => $trgActions)
-			{
-				foreach ($trgActions as $trgAction)
-				{
-					if ($this->applyGrantRule($srcAction, $trgAction))
-					{
-						$continue = true;
-					}
-				}
-			}
-		}
-		while ($continue);
+		$this->applyRules('applyGrantRule', $rules);
 	}
 
 	/**
@@ -185,21 +171,7 @@ class Matrix
 	*/
 	protected function applyRequireRules(array $rules)
 	{
-		do
-		{
-			$continue = false;
-			foreach ($rules as $srcAction => $trgActions)
-			{
-				foreach ($trgActions as $trgAction)
-				{
-					if ($this->applyRequireRule($srcAction, $trgAction))
-					{
-						$continue = true;
-					}
-				}
-			}
-		}
-		while ($continue);
+		$this->applyRules('applyRequireRule', $rules);
 
 		// TODO: test A grant B, C grant D, B grant C, B require C
 		// TODO: A grant C, B require C, C require D
@@ -231,6 +203,30 @@ class Matrix
 		}
 
 		return $revoked;
+	}
+
+	/**
+	* 
+	*
+	* @return void
+	*/
+	protected function applyRules($methodName, array $rules)
+	{
+		do
+		{
+			$continue = false;
+			foreach ($rules as $srcAction => $trgActions)
+			{
+				foreach ($trgActions as $trgAction)
+				{
+					if ($this->$methodName($srcAction, $trgAction))
+					{
+						$continue = true;
+					}
+				}
+			}
+		}
+		while ($continue);
 	}
 
 	/**
@@ -368,22 +364,8 @@ class Matrix
 	*/
 	protected function fillMatrix(array $settings)
 	{
-		// Compute the size of the matrix as the product of its dimensions
-		$dimSizes = [];
-		foreach ($this->offsets as $dimName => $offsets)
-		{
-			// We add 1 to account for the global scope (offsets contain the wildcard bit already)
-			$dimSizes[$dimName] = 1 + count($offsets);
-		}
-		$this->matrixSize = array_product($dimSizes);
+		$this->resetMatrix(array_keys($settings));
 
-		// Initialize an empty matrix for each action
-		foreach (array_keys($settings) as $action)
-		{
-			$this->acl[$action] = array_fill(0, $this->matrixSize, null);
-		}
-
-		// Insert the settings
 		foreach ($settings as $action => $permissions)
 		{
 			foreach ($permissions as list($setting, $scope))
@@ -432,6 +414,27 @@ class Matrix
 				}
 			}
 		}
+	}
+
+	/**
+	* 
+	*
+	* @param  string[] $actions
+	* @return void
+	*/
+	protected function resetMatrix(array $actions)
+	{
+		// Compute the size of the matrix as the product of its dimensions
+		$dimSizes = [];
+		foreach ($this->offsets as $dimName => $offsets)
+		{
+			// We add 1 to account for the global scope (offsets contain the wildcard bit already)
+			$dimSizes[$dimName] = 1 + count($offsets);
+		}
+		$this->matrixSize = array_product($dimSizes);
+
+		// Initialize an empty matrix for each action
+		$this->acl = array_fill_keys($actions, array_fill(0, $this->matrixSize, null));
 	}
 
 	/**
