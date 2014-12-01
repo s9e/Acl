@@ -11,6 +11,4 @@ then
 	then
 		exit 1;
 	fi
-
-	git update-index --add "docs/testdox.txt"
 fi
