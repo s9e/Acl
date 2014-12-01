@@ -45,8 +45,8 @@ class Builder
 	/**
 	* Grant a permission for given scope
 	*
-	* @param  string       $action Action name
-	* @param  array|Object $scope  Permission scope
+	* @param  string         $action Action name
+	* @param  array|Resource $scope  Permission scope
 	* @return void
 	*/
 	public function allow($action, $scope)
@@ -57,13 +57,22 @@ class Builder
 	/**
 	* Revoke a permision for given scope
 	*
-	* @param  string       $action Action name
-	* @param  array|Object $scope  Permission scope
+	* @param  string         $action Action name
+	* @param  array|Resource $scope  Permission scope
 	* @return this
 	*/
 	public function deny($action, $scope)
 	{
 		$this->add(Matrix::DENY, $action, $scope);
+	}
+
+	/**
+	* 
+	*
+	* @return array
+	*/
+	public function getConfig()
+	{
 	}
 
 	//==========================================================================
@@ -77,14 +86,14 @@ class Builder
 	*/
 	protected function add($setting, $action, $scope)
 	{
-		if ($scope instanceof Object)
+		if ($scope instanceof Resource)
 		{
-			$scope = $scope->getAclBuilderScope();
+			$scope = $scope->getAclScope();
 		}
 
 		if (!is_array($scope))
 		{
-			throw new InvalidArgumentException(__METHOD__ . '() expects parameter 2 to be an array or an instance of ' . __NAMESPACE__ . '\\Object');
+			throw new InvalidArgumentException('Scope must be an array or an instance of ' . __NAMESPACE__ . '\\Resource');
 		}
 
 		$this->settings[$action][] = [$setting, $this->normalizeScope($scope)];

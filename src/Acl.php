@@ -41,7 +41,7 @@ class Acl
 			return false;
 		}
 
-		$n = $this->getBitNumber($perm, $this->normalizeScope($perm, $scope));
+		$n = $this->getBitNumber($action, $this->normalizeScope($action, $scope));
 
 		return (bool) (ord($this->acl[$action][self::KEY_BITFIELD][$n >> 3]) & (1 << ($n & 7)));
 	}
@@ -55,7 +55,7 @@ class Acl
 	{
 		if ($scope instanceof Resource)
 		{
-			$scope = $scope->getAclReaderScope();
+			$scope = $scope->getAclAttributes();
 		}
 
 		if ($scope === self::WILDCARD)
