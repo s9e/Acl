@@ -3,7 +3,7 @@
 cd $(dirname "$0")
 cd ../..
 
-composer install --dev -q --no-interaction
+composer install --dev --no-interaction
 
 if [ -n "$COVERAGE" ]
 then
