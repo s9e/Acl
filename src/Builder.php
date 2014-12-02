@@ -117,7 +117,7 @@ class Builder
 	* @see Acl::getBitNumber
 	*
 	* @param  Matrix $matrix
-	* @return array|bool FALSE if no permission was granted, TRUE if every permission was granted globally or an array containing a bitfield, an array containing the offsets of each action in the bitfield, and an array containing the offsets of each scope value for each dimension
+	* @return array<array>|bool FALSE if no permission was granted, TRUE if every permission was granted globally or an array containing a bitfield, an array containing the offsets of each action in the bitfield, and an array containing the offsets of each scope value for each dimension
 	*/
 	protected function finalize(Matrix $matrix)
 	{
