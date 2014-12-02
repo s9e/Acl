@@ -9,7 +9,7 @@ if [ -n "$COVERAGE" ]
 then
 	echo "Installing Scrutinizer"
 	./installScrutinizer.sh
-elif [ '$TRAVIS_PHP_VERSION' != 'hhvm' ]
+elif [ "$TRAVIS_PHP_VERSION" != "hhvm" ]
 then
 	echo "Removing XDebug"
 	phpenv config-rm xdebug.ini
