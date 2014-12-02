@@ -74,7 +74,7 @@ class Builder
 	public function getAcl()
 	{
 		$acl = [];
-		foreach ($this->getActionsGroupByDimensions() as $actions)
+		foreach ($this->getActionsGroups() as $actions)
 		{
 			$rules    = array_intersect_key($this->rules,    array_flip($actions));
 			$settings = array_intersect_key($this->settings, array_flip($actions));
@@ -135,13 +135,14 @@ class Builder
 	}
 
 	/**
-	* Return a list of actions for each set of dimensions
+	* Return all actions referenced in this ACL
 	*
-	* @return array Array of arrays of strings
+	* Returns all actions used in permissions as well as granted or required by a rule
+	*
+	* @return string[]
 	*/
-	protected function getActionsGroupByDimensions()
+	protected function getActions()
 	{
-		// Collect the names of all the actions used in permissions
 		$actions = array_keys($this->settings);
 		foreach ($this->rules as $ruleName => $rules)
 		{
@@ -152,8 +153,20 @@ class Builder
 			}
 		}
 
-		// Collect the scope of each permission
-		$actionDimensions = array_fill_keys($actions, []);
+		return $actions;
+	}
+
+	/**
+	* Return the dimensions used by each action referenced in this ACL
+	*
+	* Takes the dimensions used in permission scopes into account, as well as the dimensions used by
+	* related rules
+	*
+	* @return array Array of lists of strings
+	*/
+	protected function getActionsDimensions()
+	{
+		$actionDimensions = array_fill_keys($this->getActions(), []);
 		foreach ($this->settings as $action => $permissions)
 		{
 			foreach ($permissions as list($scope))
@@ -162,6 +175,47 @@ class Builder
 			}
 		}
 
+		// Keep looping as long as the number of dimensions used by actions keep increasing
+		$peers = $this->getRulesRelationships();
+		do
+		{
+			$oldCount = count($actionDimensions, COUNT_RECURSIVE);
+			foreach ($peers as list($srcAction, $trgAction))
+			{
+				$actionDimensions[$srcAction] += $actionDimensions[$trgAction];
+				$actionDimensions[$trgAction] += $actionDimensions[$srcAction];
+			}
+			$newCount = count($actionDimensions, COUNT_RECURSIVE);
+		}
+		while ($newCount > $oldCount);
+
+		return array_map('array_keys', $actionDimensions);
+	}
+
+	/**
+	* Return a list of actions for each set of dimensions
+	*
+	* @return array Array of arrays of strings
+	*/
+	protected function getActionsGroups()
+	{
+		$groups = [];
+		foreach ($this->getActionsDimensions() as $action => $dimensions)
+		{
+			sort($dimensions);
+			$groups[serialize($dimensions)][] = $action;
+		}
+
+		return $groups;
+	}
+
+	/**
+	* Return a list of the targets used in rules
+	*
+	* @return array Array of [source, target]
+	*/
+	protected function getRulesRelationships()
+	{
 		// Retrieve the relationships between actions
 		$peers = [];
 		foreach ($this->rules as $ruleName => $rules)
@@ -175,28 +229,7 @@ class Builder
 			}
 		}
 
-		// Keep looping as long as the scope of some actions keep expanding
-		do
-		{
-			$oldCount = count($actionDimensions, COUNT_RECURSIVE);
-			foreach ($peers as list($srcAction, $trgAction))
-			{
-				$actionDimensions[$srcAction] += $actionDimensions[$trgAction];
-				$actionDimensions[$trgAction] += $actionDimensions[$srcAction];
-			}
-			$newCount = count($actionDimensions, COUNT_RECURSIVE);
-		}
-		while ($newCount > $oldCount);
-
-		// Group the actions by the set of dimensions they use
-		$groups = [];
-		foreach ($actionDimensions as $action => $dimensions)
-		{
-			sort($dimensions);
-			$groups[serialize($dimensions)][] = $action;
-		}
-
-		return $groups;
+		return $peers;
 	}
 
 	/**
