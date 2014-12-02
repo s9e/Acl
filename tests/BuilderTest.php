@@ -19,13 +19,15 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 		$builder = new Builder;
 		foreach ($permissions as $action => $settings)
 		{
-			foreach ($settings as list($methodName, $scope))
+			foreach ($settings as $setting)
 			{
+				list($methodName, $scope) = $setting;
 				$builder->$methodName($action, $scope);
 			}
 		}
-		foreach ($rules as list($ruleName, $srcAction, $trgAction))
+		foreach ($rules as $rule)
 		{
+			list($ruleName, $srcAction, $trgAction) = $rule;
 			$builder->addRule($ruleName, $srcAction, $trgAction);
 		}
 
