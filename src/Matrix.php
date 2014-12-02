@@ -347,9 +347,9 @@ class Matrix
 		$scopesValues = [];
 		foreach ($settings as $action => $permissions)
 		{
-			foreach ($permissions as list($scope))
+			foreach ($permissions as $permission)
 			{
-				foreach ($scope as $dimName => $scopeValue)
+				foreach ($permission[0] as $dimName => $scopeValue)
 				{
 					$scopesValues[$dimName][$scopeValue] = $scopeValue;
 				}
@@ -377,8 +377,9 @@ class Matrix
 
 		foreach ($settings as $action => $permissions)
 		{
-			foreach ($permissions as list($scope, $setting))
+			foreach ($permissions as $permission)
 			{
+				list($scope, $setting) = $permission;
 				$offset = 0;
 				foreach ($scope as $dimName => $scopeValue)
 				{

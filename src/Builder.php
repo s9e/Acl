@@ -185,19 +185,20 @@ class Builder
 		$actionDimensions = array_fill_keys($this->getActions(), []);
 		foreach ($this->settings as $action => $permissions)
 		{
-			foreach ($permissions as list($scope))
+			foreach ($permissions as $permission)
 			{
-				$actionDimensions[$action] += $scope;
+				$actionDimensions[$action] += $permission[0];
 			}
 		}
 
 		// Keep looping as long as the number of dimensions used by actions keep increasing
-		$peers = $this->getRulesRelationships();
+		$relations = $this->getRulesRelationships();
 		do
 		{
 			$oldCount = count($actionDimensions, COUNT_RECURSIVE);
-			foreach ($peers as list($srcAction, $trgAction))
+			foreach ($relations as $relation)
 			{
+				list($srcAction, $trgAction) = $relation;
 				$actionDimensions[$srcAction] += $actionDimensions[$trgAction];
 				$actionDimensions[$trgAction] += $actionDimensions[$srcAction];
 			}
