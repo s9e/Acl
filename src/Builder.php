@@ -59,7 +59,7 @@ class Builder
 	*
 	* @param  string         $action Action name
 	* @param  array|Resource $scope  Permission scope
-	* @return this
+	* @return void
 	*/
 	public function deny($action, $scope)
 	{
