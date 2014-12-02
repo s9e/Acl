@@ -18,7 +18,7 @@ class BitPacker
 	* @param  string[] $strings List of strings, each composed entirely of '0' and '1'
 	* @return string
 	*/
-	static public function merge(array $strings)
+	public static function merge(array $strings)
 	{
 		$lengths = array_map('strlen', $strings);
 		$len = max($lengths) - 1;
