@@ -80,6 +80,11 @@ class Builder
 			$settings = array_intersect_key($this->settings, array_flip($actions));
 			$config   = $this->finalize(new Matrix($settings, $rules));
 
+			if (!$config)
+			{
+				continue;
+			}
+
 			foreach ($actions as $action)
 			{
 				$acl[$action] =& $config;
@@ -107,11 +112,12 @@ class Builder
 	}
 
 	/**
-	* 
+	* Serialize a matrix into a compact representation
 	*
 	* @see Acl::getBitNumber
 	*
-	* @return array
+	* @param  Matrix $matrix
+	* @return array|bool FALSE if no permission was granted, TRUE if every permission was granted globally or an array containing a bitfield, an array containing the offsets of each action in the bitfield, and an array containing the offsets of each scope value for each dimension
 	*/
 	protected function finalize(Matrix $matrix)
 	{
@@ -122,10 +128,20 @@ class Builder
 				return (strpos($bitfield, '1') !== false);
 			}
 		);
-		$scopeOffsets = $matrix->getOffsets();
-		$mergedBitfield = ($bitfields) ? BitPacker::merge($bitfields) : '';
+		if (empty($bitfields))
+		{
+			return false;
+		}
 
-		$actionOffsets = [];
+		$scopeOffsets = $matrix->getOffsets();
+		if (empty($scopeOffsets))
+		{
+			// Global permissions can be represented as a boolean
+			return true;
+		}
+
+		$actionOffsets  = [];
+		$mergedBitfield = BitPacker::merge($bitfields);
 		foreach ($bitfields as $action => $bitfield)
 		{
 			$actionOffsets[$action] = strpos($mergedBitfield, $bitfield);

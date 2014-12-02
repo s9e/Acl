@@ -14,6 +14,7 @@
 	<testsuites>
 		<testsuite name="Acl">
 			<file>tests/BitPackerTest.php</file>
+			<file>tests/BuilderTest.php</file>
 			<file>tests/MatrixTest.php</file>
 		</testsuite>
 	</testsuites>

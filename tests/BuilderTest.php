@@ -43,6 +43,11 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				]
 			],
 			[
+				['publish' => [['deny', []]]],
+				[],
+				[]
+			],
+			[
 				['publish' => [['allow', []], ['deny', []]]],
 				[],
 				[]
@@ -50,7 +55,9 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 			[
 				['publish' => [['allow', ['cat' => 1]]]],
 				[],
-				[]
+				[
+					'publish' => ["\6", ['publish' => 0], ['cat' => ['' => 1, 1 => 2]]]
+				]
 			],
 		];
 	}
