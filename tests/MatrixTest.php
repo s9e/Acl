@@ -25,22 +25,22 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 	{
 		return [
 			[
-				['publish'  => [[Matrix::ALLOW, ['category' => 123]]]],
+				['publish'  => [[['category' => 123], Matrix::ALLOW]]],
 				[],
 				['category' => ['' => 1, 123 => 2]],
 				['publish'  => '011']
 			],
 			[
 				['publish'  => [
-					[Matrix::ALLOW, ['category' => 123]],
-					[Matrix::ALLOW, ['category' => 456]]
+					[['category' => 123], Matrix::ALLOW],
+					[['category' => 456], Matrix::ALLOW]
 				]],
 				[],
 				['category' => ['' => 1, 123 => 2, 456 => 3]],
 				['publish'  => '0111']
 			],
 			[
-				['publish'  => [[Matrix::ALLOW, ['category' => 123, 'type' => 456]]]],
+				['publish'  => [[['category' => 123, 'type' => 456], Matrix::ALLOW]]],
 				[],
 				[
 					'category' => ['' => 1, 123 => 2],
@@ -50,8 +50,8 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 			],
 			[
 				['publish'  => [
-					[Matrix::ALLOW, ['category' => 123, 'type' => 7]],
-					[Matrix::ALLOW, ['category' => 456, 'type' => 8]]
+					[['category' => 123, 'type' => 7], Matrix::ALLOW],
+					[['category' => 456, 'type' => 8], Matrix::ALLOW]
 				]],
 				[],
 				[

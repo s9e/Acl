@@ -51,7 +51,7 @@ class Builder
 	*/
 	public function allow($action, $scope)
 	{
-		$this->add(Matrix::ALLOW, $action, $scope);
+		$this->add($action, $this->getScope($scope), Matrix::ALLOW);
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Builder
 	*/
 	public function deny($action, $scope)
 	{
-		$this->add(Matrix::DENY, $action, $scope);
+		$this->add($action, $this->getScope($scope), Matrix::DENY);
 	}
 
 	/**
@@ -80,11 +80,25 @@ class Builder
 	//==========================================================================
 
 	/**
-	* Add or replace a action setting for given scope
+	* Add a permission
 	*
+	* @param  string  $action  Permission's action
+	* @param  array   $scope   Permission's scope
+	* @param  integer $setting Permission's setting
 	* @return void
 	*/
-	protected function add($setting, $action, $scope)
+	protected function add($action, $scope, $setting)
+	{
+		$this->settings[$action][] = [$scope, $setting];
+	}
+
+	/**
+	* Validate, normalize and optionally retrieve from a resource a permission scope
+	*
+	* @param  array|Resource $scope Original scope
+	* @return array                 Validated, normalized scope
+	*/
+	protected function getScope($scope)
 	{
 		if ($scope instanceof Resource)
 		{
@@ -96,13 +110,14 @@ class Builder
 			throw new InvalidArgumentException('Scope must be an array or an instance of ' . __NAMESPACE__ . '\\Resource');
 		}
 
-		$this->settings[$action][] = [$setting, $this->normalizeScope($scope)];
+		return $this->normalizeScope($scope);
 	}
 
 	/**
-	* 
+	* Normalize a permission scope
 	*
-	* @return array
+	* @param  array $scope Original scope
+	* @return array        Normalized scope, typed and sorted
 	*/
 	protected function normalizeScope(array $scope)
 	{
@@ -121,9 +136,9 @@ class Builder
 						throw new InvalidArgumentException('Scope value for ' . $dimName . ' cannot be empty');
 					}
 
-					// Numbers passed as strings may get cast to integer when they are used as
-					// array keys, which happens quite often in our routines. We make sure that
-					// this cast happens right now before any processing occurs
+					// Numbers passed as strings may get cast to integer when they are used as array
+					// keys, which happens quite often in our routines. We make sure that this cast
+					// happens right now before any processing occurs
 					$scopeValue = key([$scopeValue => 0]);
 					break;
 

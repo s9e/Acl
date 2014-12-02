@@ -56,7 +56,7 @@ class Matrix
 	/**
 	* Constructor
 	*
-	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @param  array $settings Actions as keys, arrays of [scope, setting] as values
 	* @param  array $rules    "grant" and "require" as keys, [source => targets] as values
 	* @return void
 	*/
@@ -313,7 +313,7 @@ class Matrix
 	/**
 	* Compute the scope offsets
 	*
-	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @param  array $settings Actions as keys, arrays of [scope, setting] as values
 	* @return void
 	*/
 	protected function computeOffsets(array $settings)
@@ -339,7 +339,7 @@ class Matrix
 	/**
 	* Collect all scope values from given settings
 	*
-	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @param  array $settings Actions as keys, arrays of [scope, setting] as values
 	* @return array           Dimensions' names as keys, arrays of [scope value => offset] as values
 	*/
 	protected function collectScopes(array $settings)
@@ -347,7 +347,7 @@ class Matrix
 		$scopesValues = [];
 		foreach ($settings as $action => $permissions)
 		{
-			foreach ($permissions as list($setting, $scope))
+			foreach ($permissions as list($scope))
 			{
 				foreach ($scope as $dimName => $scopeValue)
 				{
@@ -368,7 +368,7 @@ class Matrix
 	/**
 	* Fill the matrix with given settings
 	*
-	* @param  array $settings Actions as keys, arrays of [setting, scope] as values
+	* @param  array $settings Actions as keys, arrays of [scope, setting] as values
 	* @return void
 	*/
 	protected function fillMatrix(array $settings)
@@ -377,7 +377,7 @@ class Matrix
 
 		foreach ($settings as $action => $permissions)
 		{
-			foreach ($permissions as list($setting, $scope))
+			foreach ($permissions as list($scope, $setting))
 			{
 				$offset = 0;
 				foreach ($scope as $dimName => $scopeValue)
