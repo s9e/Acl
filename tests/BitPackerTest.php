@@ -65,4 +65,38 @@ class BitPackerTest extends PHPUnit_Framework_TestCase
 			],
 		];
 	}
+
+	/**
+	* @dataProvider getToBinTests
+	*/
+	public function testToBin($string, $expected)
+	{
+		$this->assertSame($expected, BitPacker::toBin($string));
+	}
+
+	public function getToBinTests()
+	{
+		return [
+			[
+				'0',
+				"\0"
+			],
+			[
+				'1',
+				"\1",
+			],
+			[
+				'10000000',
+				"\1"
+			],
+			[
+				'1000000010000000',
+				"\1\1"
+			],
+			[
+				'00000001000000011',
+				"\x80\x80\1"
+			],
+		];
+	}
 }

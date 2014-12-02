@@ -41,9 +41,14 @@ class Acl
 			return false;
 		}
 
+		if ($this->acl[$action] === true)
+		{
+			return true;
+		}
+
 		$n = $this->getBitNumber($action, $this->normalizeScope($action, $scope));
 
-		return (bool) (ord($this->acl[$action][self::KEY_BITFIELD][$n >> 3]) & (1 << ($n & 7)));
+		return (bool) (ord($this->acl[$action][0][$n >> 3]) & (1 << ($n & 7)));
 	}
 
 	/**

@@ -71,8 +71,22 @@ class Builder
 	*
 	* @return array
 	*/
-	public function getConfig()
+	public function getAcl()
 	{
+		$acl = [];
+		foreach ($this->getActionsGroupByDimensions() as $actions)
+		{
+			$rules    = array_intersect_key($this->rules,    array_flip($actions));
+			$settings = array_intersect_key($this->settings, array_flip($actions));
+			$config   = $this->finalize(new Matrix($settings, $rules));
+
+			foreach ($actions as $action)
+			{
+				$acl[$action] =& $config;
+			}
+		}
+
+		return $acl;
 	}
 
 	//==========================================================================
@@ -90,6 +104,99 @@ class Builder
 	protected function add($action, $scope, $setting)
 	{
 		$this->settings[$action][] = [$scope, $setting];
+	}
+
+	/**
+	* 
+	*
+	* @see Acl::getBitNumber
+	*
+	* @return array
+	*/
+	protected function finalize(Matrix $matrix)
+	{
+		$bitfields = array_filter(
+			$matrix->getBitfields(),
+			function ($bitfield)
+			{
+				return (strpos($bitfield, '1') !== false);
+			}
+		);
+		$scopeOffsets = $matrix->getOffsets();
+		$mergedBitfield = ($bitfields) ? BitPacker::merge($bitfields) : '';
+
+		$actionOffsets = [];
+		foreach ($bitfields as $action => $bitfield)
+		{
+			$actionOffsets[$action] = strpos($mergedBitfield, $bitfield);
+		}
+
+		return [BitPacker::toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
+	}
+
+	/**
+	* Return a list of actions for each set of dimensions
+	*
+	* @return array Array of arrays of strings
+	*/
+	protected function getActionsGroupByDimensions()
+	{
+		// Collect the names of all the actions used in permissions
+		$actions = array_keys($this->settings);
+		foreach ($this->rules as $ruleName => $rules)
+		{
+			foreach ($rules as $srcAction => $trgActions)
+			{
+				$actions   = array_merge($actions, $trgActions);
+				$actions[] = $srcAction;
+			}
+		}
+
+		// Collect the scope of each permission
+		$actionDimensions = array_fill_keys($actions, []);
+		foreach ($this->settings as $action => $permissions)
+		{
+			foreach ($permissions as list($scope))
+			{
+				$actionDimensions[$action] += $scope;
+			}
+		}
+
+		// Retrieve the relationships between actions
+		$peers = [];
+		foreach ($this->rules as $ruleName => $rules)
+		{
+			foreach ($rules as $srcAction => $trgActions)
+			{
+				foreach ($trgActions as $trgAction)
+				{
+					$peers[] = [$srcAction, $trgAction];
+				}
+			}
+		}
+
+		// Keep looping as long as the scope of some actions keep expanding
+		do
+		{
+			$oldCount = count($actionDimensions, COUNT_RECURSIVE);
+			foreach ($peers as list($srcAction, $trgAction))
+			{
+				$actionDimensions[$srcAction] += $actionDimensions[$trgAction];
+				$actionDimensions[$trgAction] += $actionDimensions[$srcAction];
+			}
+			$newCount = count($actionDimensions, COUNT_RECURSIVE);
+		}
+		while ($newCount > $oldCount);
+
+		// Group the actions by the set of dimensions they use
+		$groups = [];
+		foreach ($actionDimensions as $action => $dimensions)
+		{
+			sort($dimensions);
+			$groups[serialize($dimensions)][] = $action;
+		}
+
+		return $groups;
 	}
 
 	/**

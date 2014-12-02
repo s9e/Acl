@@ -72,4 +72,23 @@ class BitPacker
 
 		return implode('', $strings);
 	}
+
+	/**
+	* Convert a string made of 0s and 1s to raw bytes
+	*
+	* The character at pos #0 in the original string matches bit #0 of the returned string
+	*
+	* @param  string $str
+	* @return string
+	*/
+	public static function toBin($str)
+	{
+		$bin = '';
+		foreach (str_split($str, 8) as $chunk)
+		{
+			$bin .= chr(bindec(strrev($chunk)));
+		}
+
+		return $bin;
+	}
 }

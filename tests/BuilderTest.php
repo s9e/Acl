@@ -10,9 +10,48 @@ use s9e\Acl\Builder;
 */
 class BuilderTest extends PHPUnit_Framework_TestCase
 {
-	public function testDenyOverridesAllow()
+	/**
+	* @testdox getAcl() tests
+	* @dataProvider getAclTests
+	*/
+	public function testAcl($permissions, $rules, $expected)
 	{
-		$acl->deny('publish');
-		$acl->allow('publish');
+		$builder = new Builder;
+		foreach ($permissions as $action => $settings)
+		{
+			foreach ($settings as list($methodName, $scope))
+			{
+				$builder->$methodName($action, $scope);
+			}
+		}
+		foreach ($rules as list($ruleName, $srcAction, $trgAction))
+		{
+			$builder->addRule($ruleName, $srcAction, $trgAction);
+		}
+
+		$this->assertEquals($expected, $builder->getAcl());
+	}
+
+	public function getAclTests()
+	{
+		return [
+			[
+				['publish' => [['allow', []]]],
+				[],
+				[
+					'publish' => true
+				]
+			],
+			[
+				['publish' => [['allow', []], ['deny', []]]],
+				[],
+				[]
+			],
+			[
+				['publish' => [['allow', ['cat' => 1]]]],
+				[],
+				[]
+			],
+		];
 	}
 }
