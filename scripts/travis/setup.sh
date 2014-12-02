@@ -5,7 +5,7 @@ cd $(dirname "$0")
 echo "Installing Composer"
 ./installComposer.sh
 
-if [ -n "$COVERAGE" ]
+if [ "$TRAVIS_PHP_VERSION" = "5.6" ]
 then
 	echo "Installing Scrutinizer"
 	./installScrutinizer.sh

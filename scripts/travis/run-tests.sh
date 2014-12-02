@@ -3,7 +3,7 @@
 cd $(dirname "$0")
 cd ../..
 
-if [ -n "$COVERAGE" ]
+if [ "$TRAVIS_PHP_VERSION" = "5.6" ]
 then
 	phpunit --coverage-clover /tmp/clover.xml
 else
