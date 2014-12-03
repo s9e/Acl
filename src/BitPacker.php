@@ -44,8 +44,8 @@ class BitPacker
 	{
 		$this->strings = $strings;
 		$this->lengths = array_map('strlen', $this->strings);
-		$len = max($this->lengths) - 1;
 
+		$len = max($this->lengths) - 1;
 		while ($len > 0)
 		{
 			if (!$this->matchSubstrings($len))
