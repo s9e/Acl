@@ -85,7 +85,8 @@ class BitPacker
 	*
 	* The algorithm matches strings that overlap each other. For example, "10111" and "11100" will
 	* be matched at length 3 because the last 3 characters of the first string match the first 3
-	* characters of the second string. The second string will be removed
+	* characters of the second string. The second string will be removed and merged into the first
+	* string
 	*
 	* @param  integer $len Substrings length
 	* @return bool         Whether any strings were merged
