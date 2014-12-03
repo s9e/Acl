@@ -86,7 +86,7 @@ class Builder
 		$acl = [];
 		foreach ($this->getActionsGroups() as $actions)
 		{
-			$rules    = array_intersect_key($this->rules,    array_flip($actions));
+			$rules    = array_intersect_key($this->rules, array_flip($actions));
 			$settings = array_intersect_key($this->settings, array_flip($actions));
 			$config   = $this->finalize(new Matrix($settings, $rules));
 
