@@ -67,11 +67,21 @@ class Builder
 	}
 
 	/**
-	* 
+	* Return an instance of the ACL reader
+	*
+	* @return Reader
+	*/
+	public function getReader()
+	{
+		return new Reader($this->getReaderConfig());
+	}
+
+	/**
+	* Return the ACL config as an array
 	*
 	* @return array
 	*/
-	public function getAcl()
+	public function getReaderConfig()
 	{
 		$acl = [];
 		foreach ($this->getActionsGroups() as $actions)

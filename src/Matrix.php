@@ -323,7 +323,7 @@ class Matrix
 		foreach ($this->collectScopes($settings) as $dimName => $scopeValues)
 		{
 			// Prepend the wildcard bit to the list of values
-			array_unshift($scopeValues, Acl::WILDCARD);
+			array_unshift($scopeValues, Reader::WILDCARD);
 
 			// The global bit takes offset 0. Each other value takes the offset equal to their
 			// one-based index multiplied by the dimension's factor (number of scope values
@@ -408,7 +408,7 @@ class Matrix
 	{
 		foreach ($dimensions as $k => $dimension)
 		{
-			$wildcardOffset = $this->offsets[$dimension][Acl::WILDCARD];
+			$wildcardOffset = $this->offsets[$dimension][Reader::WILDCARD];
 			$this->acl[$action][$base + $wildcardOffset] = null;
 
 			$unmappedDimensions = $dimensions;

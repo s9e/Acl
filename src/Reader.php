@@ -7,7 +7,7 @@
 */
 namespace s9e\Acl;
 
-class Acl
+class Reader
 {
 	/**
 	* Magic value used to represent any scope value

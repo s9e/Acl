@@ -11,10 +11,19 @@ use s9e\Acl\Builder;
 class BuilderTest extends PHPUnit_Framework_TestCase
 {
 	/**
-	* @testdox getAcl() tests
-	* @dataProvider getAclTests
+	* @testdox getReader() returns an instance of s9e\Acl\Reader
 	*/
-	public function testAcl($permissions, $rules, $expected)
+	public function testGetReader()
+	{
+		$builder = new Builder;
+		$this->assertInstanceOf('s9e\\Acl\\Reader', $builder->getReader());
+	}
+
+	/**
+	* @testdox getReaderConfig() tests
+	* @dataProvider getGetReaderConfigTests
+	*/
+	public function testGetReaderConfig($permissions, $rules, $expected)
 	{
 		$builder = new Builder;
 		foreach ($permissions as $action => $settings)
@@ -31,10 +40,10 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 			$builder->addRule($ruleName, $srcAction, $trgAction);
 		}
 
-		$this->assertEquals($expected, $builder->getAcl());
+		$this->assertEquals($expected, $builder->getReaderConfig());
 	}
 
-	public function getAclTests()
+	public function getGetReaderConfigTests()
 	{
 		return [
 			[
