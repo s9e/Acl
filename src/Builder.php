@@ -54,6 +54,8 @@ class Builder
 			throw new InvalidArgumentException("Unsupported rule '" . $rule . "'");
 		}
 
+		$this->add($srcAction, [], null);
+		$this->add($trgAction, [], null);
 		$this->rules[$rule][$srcAction][$trgAction] = $trgAction;
 	}
 
@@ -115,6 +117,7 @@ class Builder
 				$acl[$action] =& $config;
 			}
 		}
+		ksort($acl);
 
 		return $acl;
 	}
@@ -133,6 +136,11 @@ class Builder
 	*/
 	protected function add($action, $scope, $setting)
 	{
+		if ($action === '')
+		{
+			throw new InvalidArgumentException('Action cannot be an empty string');
+		}
+
 		$this->settings[$action][] = [$scope, $setting];
 	}
 
