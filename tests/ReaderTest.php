@@ -63,4 +63,26 @@ class ReaderTest extends PHPUnit_Framework_TestCase
 		$acl = $builder->getReader();
 		$this->assertTrue($acl->isAllowed('foo', ['cat' => 1]));
 	}
+
+	/**
+	* @testdox isAllowed('foo', ['x'=>1,'y'=>2]) returns true if allow('foo',['x'=>1,'y'=>2]) was called
+	*/
+	public function testLocalAllowedMultipleDimensions()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1, 'y' => 2]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', ['x' => 1, 'y' => 2]));
+	}
+
+	/**
+	* @testdox isAllowed('foo', ['x'=>1,'y'=>2]) returns true if allow('foo',['x'=>1]) was called
+	*/
+	public function testLocalAllowedExtraDimensions()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', ['x' => 1, 'y' => 2]));
+	}
 }
