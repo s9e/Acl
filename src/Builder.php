@@ -64,7 +64,7 @@ class Builder
 	* @param  array|Resource $scope  Permission scope
 	* @return void
 	*/
-	public function allow($action, $scope)
+	public function allow($action, $scope = [])
 	{
 		$this->add($action, $this->getScope($scope), Matrix::ALLOW);
 	}
@@ -76,7 +76,7 @@ class Builder
 	* @param  array|Resource $scope  Permission scope
 	* @return void
 	*/
-	public function deny($action, $scope)
+	public function deny($action, $scope = [])
 	{
 		$this->add($action, $this->getScope($scope), Matrix::DENY);
 	}

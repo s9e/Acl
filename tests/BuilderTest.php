@@ -44,6 +44,44 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	* @testdox allow() can be called without a scope
+	*/
+	public function testAllowNoScope()
+	{
+		$builder = new Builder;
+		$builder->allow('foo');
+	}
+
+	/**
+	* @testdox deny() can be called without a scope
+	*/
+	public function testDenyNoScope()
+	{
+		$builder = new Builder;
+		$builder->deny('foo');
+	}
+
+	/**
+	* @testdox allow() defaults to the global scope if none is provided
+	*/
+	public function testAllowNoScopeDefaultGlobal()
+	{
+		$builder = new Builder;
+		$builder->allow('foo');
+		$this->assertEquals(['foo' => true], $builder->getReaderConfig());
+	}
+
+	/**
+	* @testdox deny() defaults to the global scope if none is provided
+	*/
+	public function testDenyNoScopeDefaultGlobal()
+	{
+		$builder = new Builder;
+		$builder->allow('foo');
+		$this->assertEquals(['foo' => true], $builder->getReaderConfig());
+	}
+
+	/**
 	* @testdox addRule() rejects rule "foo"
 	* @expectedException InvalidArgumentException
 	* @expectedExceptionMessage Unsupported rule 'foo'
