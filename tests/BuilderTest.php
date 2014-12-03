@@ -33,7 +33,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
-	* @testdox allow() rejects floats as scope value
+	* @testdox allow() rejects float as scope value
 	* @expectedException InvalidArgumentException
 	* @expectedExceptionMessage Invalid type for x scope: integer or string expected, double given
 	*/
@@ -41,6 +41,17 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	{
 		$builder = new Builder;
 		$builder->allow('foo', ['x' => 2.2]);
+	}
+
+	/**
+	* @testdox allow() rejects boolean as scope value
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Invalid type for x scope: integer or string expected, boolean given
+	*/
+	public function testScopeValueBoolean()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => true]);
 	}
 
 	/**
