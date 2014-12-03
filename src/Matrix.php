@@ -438,13 +438,12 @@ class Matrix
 	protected function resetMatrix(array $actions)
 	{
 		// Compute the size of the matrix as the product of its dimensions
-		$dimSizes = [];
-		foreach ($this->offsets as $dimName => $offsets)
+		$this->matrixSize = 1;
+		foreach ($this->offsets as $offsets)
 		{
 			// We add 1 to account for the global scope (offsets contain the wildcard bit already)
-			$dimSizes[$dimName] = 1 + count($offsets);
+			$this->matrixSize *= 1 + count($offsets);
 		}
-		$this->matrixSize = array_product($dimSizes);
 
 		// Initialize an empty matrix for each action
 		$this->acl = array_fill_keys($actions, array_fill(0, $this->matrixSize, null));
