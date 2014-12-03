@@ -20,7 +20,7 @@ class Reader
 	protected $acl;
 
 	/**
-	* 
+	* Constructor
 	*
 	* @return void
 	*/
@@ -30,9 +30,11 @@ class Reader
 	}
 
 	/**
-	* 
+	* Test whether given action is allowed in given scope
 	*
-	* @return void
+	* @param  string         $action Permission action
+	* @param  array|Resource $scope  Permission scope
+	* @return bool
 	*/
 	public function isAllowed($action, $scope = [])
 	{
@@ -52,9 +54,11 @@ class Reader
 	}
 
 	/**
-	* 
+	* Normalize the scope argument of a public API method
 	*
-	* @return array
+	* @param  string         $action Permission action
+	* @param  array|Resource $scope  Permission scope
+	* @return array                  Normalized permission scope
 	*/
 	protected function normalizeScope($action, $scope)
 	{
@@ -77,8 +81,10 @@ class Reader
 	}
 
 	/**
-	* 
+	* Return the bit number of given permission
 	*
+	* @param  string $action Permission action
+	* @param  array  $scope  Permission scope
 	* @return integer
 	*/
 	protected function getBitNumber($action, array $scope)
