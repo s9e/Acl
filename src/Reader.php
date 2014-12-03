@@ -7,6 +7,8 @@
 */
 namespace s9e\Acl;
 
+use InvalidArgumentException;
+
 class Reader
 {
 	/**
@@ -75,7 +77,7 @@ class Reader
 
 		if (!is_array($scope))
 		{
-			throw new InvalidArgumentException('Invalid scope');
+			throw new InvalidArgumentException('Scope must be an array or an instance of ' . __NAMESPACE__ . '\\Resource');
 		}
 
 		if (isset($scope[self::WILDCARD]))
