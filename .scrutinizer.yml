@@ -4,7 +4,6 @@ filter:
 checks:
   php:
     code_rating: true
-    duplication: true
     variable_existence: true
     useless_calls: true
     use_statement_alias_conflict: true
@@ -81,7 +80,6 @@ checks:
     fix_linefeed: true
     fix_doc_comments: true
     ensure_lower_case_builtin_functions: true
-    encourage_single_quotes: true
     deadlock_detection_in_loops: true
     classes_in_camel_caps: true
     catch_class_exists: true
