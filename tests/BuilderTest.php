@@ -104,6 +104,42 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	* @testdox allow() rejects a scalar value used as scope
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Scope must be an array or an instance of s9e\Acl\Resource
+	*/
+	public function testScalarScope()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', 123);
+	}
+
+	/**
+	* @testdox allow() accepts an instance of s9e\Acl\Resource as scope if its getAclScope() method returns an array
+	*/
+	public function testResourceScope()
+	{
+		$resource = $this->getMock('s9e\\Acl\\Resource');
+		$resource->expects($this->once())
+		         ->method('getAclScope')
+		         ->will($this->returnValue(['id' => 123]));
+
+		$builder = new Builder;
+		$builder->allow('foo', $resource);
+
+		$this->assertEquals(
+			[
+				'foo' => [
+					"\6",
+					['foo' => 0],
+					['id'  => ['' => 1, 123 => 2]]
+				]
+			],
+			$builder->getReaderConfig()
+		);
+	}
+
+	/**
 	* @testdox addRule() rejects rule "foo"
 	* @expectedException InvalidArgumentException
 	* @expectedExceptionMessage Unsupported rule 'foo'
