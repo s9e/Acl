@@ -409,7 +409,6 @@ class Matrix
 		foreach ($dimensions as $k => $dimension)
 		{
 			$wildcardOffset = $this->offsets[$dimension][Reader::WILDCARD];
-			$this->acl[$action][$base + $wildcardOffset] = null;
 
 			$unmappedDimensions = $dimensions;
 			unset($unmappedDimensions[$k]);
