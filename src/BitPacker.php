@@ -42,7 +42,7 @@ class BitPacker
 	*/
 	public function merge(array $strings)
 	{
-		$this->strings = $strings;
+		$this->strings = array_unique($strings);
 		$this->lengths = array_map('strlen', $this->strings);
 
 		$len = max($this->lengths) - 1;
