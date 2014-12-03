@@ -199,11 +199,7 @@ class Matrix
 			{
 				$this->acl[$srcAction][$k] = $this->acl[$trgAction][$k];
 				$revoked = true;
-
-				if (isset($this->grantees[$srcAction][$k]))
-				{
-					$this->cancelGrantsFrom($srcAction, $k);
-				}
+				$this->cancelGrantsFrom($srcAction, $k);
 			}
 		}
 
@@ -252,11 +248,7 @@ class Matrix
 		if (empty($this->grantors[$trgAction][$k]))
 		{
 			$this->acl[$trgAction][$k] = null;
-
-			if (isset($this->grantees[$trgAction][$k]))
-			{
-				$this->cancelGrantsFrom($trgAction, $k);
-			}
+			$this->cancelGrantsFrom($trgAction, $k);
 		}
 	}
 
@@ -271,6 +263,11 @@ class Matrix
 	*/
 	protected function cancelGrantsFrom($srcAction, $k)
 	{
+		if (!isset($this->grantees[$srcAction][$k]))
+		{
+			return;
+		}
+
 		foreach ($this->grantees[$srcAction][$k] as $trgAction)
 		{
 			$this->cancelGrant($srcAction, $k, $trgAction);
