@@ -70,12 +70,17 @@ class Reader
 
 		if ($scope === self::WILDCARD)
 		{
-			$scope = array_fill_keys(array_keys($this->acl[$action][self::KEY_SCOPE_OFFSETS]), self::WILDCARD);
+			$scope = [self::WILDCARD => self::WILDCARD];
 		}
 
 		if (!is_array($scope))
 		{
 			throw new InvalidArgumentException('Invalid scope');
+		}
+
+		if (isset($scope[self::WILDCARD]))
+		{
+			$scope += array_fill_keys(array_keys($this->acl[$action][2]), $scope[self::WILDCARD]);
 		}
 
 		return $scope;

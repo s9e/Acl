@@ -85,4 +85,59 @@ class ReaderTest extends PHPUnit_Framework_TestCase
 		$acl = $builder->getReader();
 		$this->assertTrue($acl->isAllowed('foo', ['x' => 1, 'y' => 2]));
 	}
+
+	/**
+	* @testdox isAllowed('foo', ['x' => WILDCARD]) returns true if allow('foo', ['x' => 1]) was called
+	*/
+	public function testLocalWildcard()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', ['x' => $acl::WILDCARD]));
+	}
+
+	/**
+	* @testdox isAllowed('foo', WILDCARD) returns true if allow('foo', ['x' => 1]) was called
+	*/
+	public function testGlobalWildcard()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', $acl::WILDCARD));
+	}
+
+	/**
+	* @testdox isAllowed('foo', [WILDCARD => 1]) returns true if allow('foo', ['x' => 1]) was called
+	*/
+	public function testWildcardScope()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', [$acl::WILDCARD => 1]));
+	}
+
+	/**
+	* @testdox isAllowed('foo', [WILDCARD => 2]) returns false if allow('foo', ['x' => 1]) was called
+	*/
+	public function testWildcardScopeMiss()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1]);
+		$acl = $builder->getReader();
+		$this->assertFalse($acl->isAllowed('foo', [$acl::WILDCARD => 2]));
+	}
+
+	/**
+	* @testdox isAllowed('foo', ['x' => 1, WILDCARD => WILDCARD]) returns true if allow('foo', ['x' => 1, 'y' => 2]) was called
+	*/
+	public function testWildcardScopePartial()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 1, 'y' => 2]);
+		$acl = $builder->getReader();
+		$this->assertTrue($acl->isAllowed('foo', ['x' => 1, $acl::WILDCARD => $acl::WILDCARD]));
+	}
 }
