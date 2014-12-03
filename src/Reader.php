@@ -72,7 +72,7 @@ class Reader
 		{
 			$scope = array_fill_keys(array_keys($this->acl[$action][self::KEY_SCOPE_OFFSETS]), self::WILDCARD);
 		}
-		
+
 		if (!is_array($scope))
 		{
 			throw new InvalidArgumentException('Invalid scope');
