@@ -128,6 +128,163 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 				],
 				['publish'  => '111111110']
 			],
+			[
+				[
+					'edit' => [[['category' => 123], Matrix::ALLOW]],
+					'read' => [[[],                  null]]
+				],
+				['edit' => ['read']],
+				[],
+				['category' => ['' => 1, 123 => 2]],
+				[
+					'edit'  => '011',
+					'read'  => '011'
+				]
+			],
+			[
+				[
+					'edit' => [[['category' => 123], Matrix::ALLOW]],
+					'read' => [[[],                  null]]
+				],
+				[],
+				['edit' => ['read']],
+				['category' => ['' => 1, 123 => 2]],
+				[
+					'edit'  => '000',
+					'read'  => '000'
+				]
+			],
+			[
+				[
+					'edit' => [[['category' => 123], Matrix::ALLOW]],
+					'read' => [[[],                  null]]
+				],
+				['edit' => ['read']],
+				['edit' => ['read']],
+				['category' => ['' => 1, 123 => 2]],
+				[
+					'edit'  => '011',
+					'read'  => '011'
+				]
+			],
+			[
+				// A grants B, B grants C, C requires A
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], null]],
+					'C' => [[[], null]]
+				],
+				['A' => ['B'], 'B' => ['C']],
+				['C' => ['A']],
+				[],
+				[
+					'A' => '1',
+					'B' => '1',
+					'C' => '1'
+				]
+			],
+			[
+				// A grants B, B grants C, C requires B
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], null]],
+					'C' => [[[], null]]
+				],
+				['A' => ['B'], 'B' => ['C']],
+				['C' => ['B']],
+				[],
+				[
+					'A' => '1',
+					'B' => '1',
+					'C' => '1'
+				]
+			],
+			[
+				// A grants B, B requires C
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], null]],
+					'C' => [[[], null]]
+				],
+				['A' => ['B']],
+				['B' => ['C']],
+				[],
+				[
+					'A' => '1',
+					'B' => '0',
+					'C' => '0'
+				]
+			],
+			[
+				// A grants B, A requires C
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], null]],
+					'C' => [[[], null]]
+				],
+				['A' => ['B']],
+				['A' => ['C']],
+				[],
+				[
+					'A' => '0',
+					'B' => '0',
+					'C' => '0'
+				]
+			],
+			[
+				// A grants B, B grants C, A requires D
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], null]],
+					'C' => [[[], null]],
+					'D' => [[[], null]]
+				],
+				['A' => ['B'], 'B' => ['C']],
+				['A' => ['D']],
+				[],
+				[
+					'A' => '0',
+					'B' => '0',
+					'C' => '0',
+					'D' => '0'
+				]
+			],
+			[
+				// A grants C, B grants C, A requires D
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], Matrix::ALLOW]],
+					'C' => [[[], null]],
+					'D' => [[[], null]]
+				],
+				['A' => ['C'], 'B' => ['C']],
+				['A' => ['D']],
+				[],
+				[
+					'A' => '0',
+					'B' => '1',
+					'C' => '1',
+					'D' => '0'
+				]
+			],
+			[
+				// A grants C, B grants C, B requires D
+				[
+					'A' => [[[], Matrix::ALLOW]],
+					'B' => [[[], Matrix::ALLOW]],
+					'C' => [[[], null]],
+					'D' => [[[], null]]
+				],
+				['A' => ['C'], 'B' => ['C']],
+				['B' => ['D']],
+				[],
+				[
+					'A' => '1',
+					'B' => '0',
+					'C' => '1',
+					'D' => '0'
+				]
+			],
 		];
 	}
 }

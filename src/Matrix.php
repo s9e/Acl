@@ -252,7 +252,11 @@ class Matrix
 		if (empty($this->grantors[$trgAction][$k]))
 		{
 			$this->acl[$trgAction][$k] = null;
-			$this->cancelGrantsFrom($trgAction, $k);
+
+			if (isset($this->grantees[$trgAction][$k]))
+			{
+				$this->cancelGrantsFrom($trgAction, $k);
+			}
 		}
 	}
 
