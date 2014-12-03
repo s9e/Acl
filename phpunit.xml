@@ -16,6 +16,7 @@
 			<file>tests/BitPackerTest.php</file>
 			<file>tests/BuilderTest.php</file>
 			<file>tests/MatrixTest.php</file>
+			<file>tests/ReaderTest.php</file>
 		</testsuite>
 	</testsuites>
 
