@@ -103,9 +103,10 @@ class Builder
 		$acl = [];
 		foreach ($this->getActionsGroups() as $actions)
 		{
-			$rules    = array_intersect_key($this->rules, array_flip($actions));
+			$grant    = array_intersect_key($this->rules['grant'], array_flip($actions));
+			$require  = array_intersect_key($this->rules['require'], array_flip($actions));
 			$settings = array_intersect_key($this->settings, array_flip($actions));
-			$config   = $this->finalize(new Matrix($settings, $rules));
+			$config   = $this->finalize(new Matrix($settings, $grant, $require));
 
 			if (!$config)
 			{

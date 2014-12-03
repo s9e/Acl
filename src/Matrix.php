@@ -57,14 +57,15 @@ class Matrix
 	* Constructor
 	*
 	* @param  array $settings Actions as keys, arrays of [scope, setting] as values
-	* @param  array $rules    "grant" and "require" as keys, [source => targets] as values
+	* @param  array $grant    Associative array with actions as keys and list of targets as values
+	* @param  array $require  Associative array with actions as keys and list of targets as values
 	* @return void
 	*/
-	public function __construct(array $settings, array $rules)
+	public function __construct(array $settings, array $grant, array $require)
 	{
 		$this->computeOffsets($settings);
 		$this->fillMatrix($settings);
-		$this->solve($rules);
+		$this->solve($grant, $require);
 	}
 
 	/**
@@ -386,7 +387,7 @@ class Matrix
 					$offset += $this->offsets[$dimName][$scopeValue];
 				}
 
-				if (!isset($this->acl[$offset]) || $setting === self::DENY)
+				if (!isset($this->acl[$action][$offset]) || $setting === self::DENY)
 				{
 					$this->acl[$action][$offset] = $setting;
 				}
@@ -453,16 +454,13 @@ class Matrix
 	*
 	* Will apply inheritance and given rules, then set the wildcard bits
 	*
-	* @param  array $rules    "grant" and "require" as keys, [source => targets] as values
+	* @param  array $grant    Associative array with actions as keys and list of targets as values
+	* @param  array $require  Associative array with actions as keys and list of targets as values
 	* @return void
 	*/
-	protected function solve(array $rules)
+	protected function solve(array $grant, array $require)
 	{
 		$this->computeInheritance();
-
-		$rules  += ['grant' => [], 'require' => []];
-		$grant   = array_intersect_key($rules['grant'], $this->acl);
-		$require = array_intersect_key($rules['require'], $this->acl);
 
 		$hash   = crc32(serialize($this->acl));
 		$hashes = [$hash => 1];

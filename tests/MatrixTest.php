@@ -60,9 +60,9 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 	* @testdox solve() tests
 	* @dataProvider getSolveTests
 	*/
-	public function testSolve($settings, $rules, $expectedOffsets, $expectedBitfields)
+	public function testSolve($settings, $grant, $require, $expectedOffsets, $expectedBitfields)
 	{
-		$matrix = new Matrix($settings, $rules);
+		$matrix = new Matrix($settings, $grant, $require);
 
 		$this->assertEquals(
 			$this->aclToArray($expectedBitfields, $expectedOffsets),
@@ -78,6 +78,7 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 			[
 				['publish'  => [[['category' => 123], Matrix::ALLOW]]],
 				[],
+				[],
 				['category' => ['' => 1, 123 => 2]],
 				['publish'  => '011']
 			],
@@ -87,11 +88,13 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 					[['category' => 456], Matrix::ALLOW]
 				]],
 				[],
+				[],
 				['category' => ['' => 1, 123 => 2, 456 => 3]],
 				['publish'  => '0111']
 			],
 			[
 				['publish'  => [[['category' => 123, 'type' => 456], Matrix::ALLOW]]],
+				[],
 				[],
 				[
 					'category' => ['' => 1, 123 => 2],
@@ -105,6 +108,7 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 					[['category' => 456, 'type' => 8], Matrix::ALLOW]
 				]],
 				[],
+				[],
 				[
 					'category' => ['' => 1, 123 => 2, 456 =>  3],
 					'type'     => ['' => 4,   7 => 8,   8 => 12]
@@ -116,6 +120,7 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 					[['category' => 123, 'type' => 7], Matrix::DENY ],
 					[[],                               Matrix::ALLOW]
 				]],
+				[],
 				[],
 				[
 					'category' => ['' => 1, 123 => 2],

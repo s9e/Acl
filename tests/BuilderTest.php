@@ -11,6 +11,17 @@ use s9e\Acl\Builder;
 class BuilderTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	* @testdox allow() rejects an empty string used as action
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Action cannot be an empty string
+	*/
+	public function testEmptyAction()
+	{
+		$builder = new Builder;
+		$builder->allow('', []);
+	}
+
+	/**
 	* @testdox allow() rejects an empty string used as dimension
 	* @expectedException InvalidArgumentException
 	* @expectedExceptionMessage Scope dimensions must have a name
@@ -104,6 +115,37 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	* @testdox addRule() rejects empty string as source action
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Action cannot be an empty string
+	*/
+	public function testRuleEmptySrcAction()
+	{
+		$builder = new Builder;
+		$builder->addRule('', 'grant', 'trg');
+	}
+
+	/**
+	* @testdox addRule() rejects empty string as source action
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Action cannot be an empty string
+	*/
+	public function testRuleEmptyTrgAction()
+	{
+		$builder = new Builder;
+		$builder->addRule('src', 'grant', '');
+	}
+
+	/**
+	* @testdox addRule() can be called even if no permission is set
+	*/
+	public function testAddRuleNoPerm()
+	{
+		$builder = new Builder;
+		$builder->addRule('src', 'grant', 'trg');
+	}
+
+	/**
 	* @testdox getReader() returns an instance of s9e\Acl\Reader
 	*/
 	public function testGetReader()
@@ -161,6 +203,60 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				[],
 				[
 					'publish' => ["\6", ['publish' => 0], ['cat' => ['' => 1, 1 => 2]]]
+				]
+			],
+			[
+				[
+					'publish' => [['allow', []]],
+					'edit'    => [['allow', []]]
+				],
+				[
+					['edit', 'require', 'publish']
+				],
+				[
+					'publish' => true,
+					'edit'    => true
+				]
+			],
+			[
+				[
+					'publish' => [['allow', []]],
+					'edit'    => [['allow', ['cat' => 123]]]
+				],
+				[
+					['edit', 'require', 'publish']
+				],
+				[
+					'publish' => [
+						"\016",
+						['publish' => 1, 'edit' => 0],
+						['cat' => ['' => 1, 123 => 2]]
+					],
+					'edit' => [
+						"\016",
+						['publish' => 1, 'edit' => 0],
+						['cat' => ['' => 1, 123 => 2]]
+					]
+				]
+			],
+			[
+				[
+					'edit'    => [['allow', ['cat' => 123]]]
+				],
+				[
+					['edit', 'grant', 'publish']
+				],
+				[
+					'publish' => [
+						"\6",
+						['publish' => 0, 'edit' => 0],
+						['cat' => ['' => 1, 123 => 2]]
+					],
+					'edit' => [
+						"\6",
+						['publish' => 0, 'edit' => 0],
+						['cat' => ['' => 1, 123 => 2]]
+					]
 				]
 			],
 		];
