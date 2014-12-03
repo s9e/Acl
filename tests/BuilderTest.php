@@ -11,6 +11,39 @@ use s9e\Acl\Builder;
 class BuilderTest extends PHPUnit_Framework_TestCase
 {
 	/**
+	* @testdox allow() rejects an empty string used as dimension
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Scope dimensions must have a name
+	*/
+	public function testScopeDimensionEmpty()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['' => 'x']);
+	}
+
+	/**
+	* @testdox allow() rejects an empty string used as scope value
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Scope value for x cannot be empty
+	*/
+	public function testScopeValueEmpty()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => '']);
+	}
+
+	/**
+	* @testdox allow() rejects floats as scope value
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Invalid type for x scope: integer or string expected, double given
+	*/
+	public function testScopeValueFloat()
+	{
+		$builder = new Builder;
+		$builder->allow('foo', ['x' => 2.2]);
+	}
+
+	/**
 	* @testdox getReader() returns an instance of s9e\Acl\Reader
 	*/
 	public function testGetReader()

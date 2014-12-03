@@ -289,31 +289,23 @@ class Builder
 	protected function normalizeScope(array $scope)
 	{
 		ksort($scope);
-		foreach ($scope as $dimName => &$scopeValue)
+		foreach ($scope as $dimName => $scopeValue)
 		{
-			switch (gettype($scopeValue))
+			if ($dimName === '')
 			{
-				case 'integer':
-					// nothing to do
-					break;
+				throw new InvalidArgumentException('Scope dimensions must have a name');
+			}
 
-				case 'string':
-					if ($scopeValue === '')
-					{
-						throw new InvalidArgumentException('Scope value for ' . $dimName . ' cannot be empty');
-					}
+			if ($scopeValue === '')
+			{
+				throw new InvalidArgumentException('Scope value for ' . $dimName . ' cannot be empty');
+			}
 
-					// Numbers passed as strings may get cast to integer when they are used as array
-					// keys, which happens quite often in our routines. We make sure that this cast
-					// happens right now before any processing occurs
-					$scopeValue = key([$scopeValue => 0]);
-					break;
-
-				default:
-					throw new InvalidArgumentException('Invalid type for ' . $dimName . ' scope: integer or string expected, ' . gettype($scopeValue) . ' given');
+			if (!is_integer($scopeValue) && !is_string($scopeValue))
+			{
+				throw new InvalidArgumentException('Invalid type for ' . $dimName . ' scope: integer or string expected, ' . gettype($scopeValue) . ' given');
 			}
 		}
-		unset($scopeValue);
 
 		return $scope;
 	}
