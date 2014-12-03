@@ -44,6 +44,17 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 	}
 
 	/**
+	* @testdox addRule() rejects rule "foo"
+	* @expectedException InvalidArgumentException
+	* @expectedExceptionMessage Unsupported rule 'foo'
+	*/
+	public function testInvalidRule()
+	{
+		$builder = new Builder;
+		$builder->addRule('src', 'foo', 'trg');
+	}
+
+	/**
 	* @testdox getReader() returns an instance of s9e\Acl\Reader
 	*/
 	public function testGetReader()
