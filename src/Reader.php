@@ -90,9 +90,10 @@ class Reader
 	*/
 	protected function getBitNumber($action, array $scope)
 	{
-		list($bitfield, $actionOffsets, $scopeOffsets) = $this->acl[$action];
-		$n = (isset($actionOffsets[$action])) ? $actionOffsets[$action] : 0;
+		$actionOffsets = $this->acl[$action][1];
+		$scopeOffsets  = $this->acl[$action][2];
 
+		$n = (isset($actionOffsets[$action])) ? $actionOffsets[$action] : 0;
 		foreach ($scope as $dimName => $scopeValue)
 		{
 			if (isset($scopeOffsets[$dimName][$scopeValue]))
