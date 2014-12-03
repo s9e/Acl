@@ -10,6 +10,28 @@ namespace s9e\Acl;
 class BitPacker
 {
 	/**
+	* @var array Associative array using the first n characters of each string as keys, and the
+	*            index of the corresponding string in $this->strings as values
+	*/
+	protected $heads;
+
+	/**
+	* @var integer[] Lengths of strings being merged
+	*/
+	protected $lengths;
+
+	/**
+	* @var string[] Strings being merged
+	*/
+	protected $strings;
+
+	/**
+	* @var array Associative array using the last n characters of each string as keys, and the
+	*            index of the corresponding string in $this->strings as values
+	*/
+	protected $tails;
+
+	/**
 	* Merge an array strings into the shortest string possible
 	*
 	* Strings are expected to be made entirely of '0' and '1'. The result isn't guaranteed to be
@@ -18,59 +40,88 @@ class BitPacker
 	* @param  string[] $strings List of strings, each composed entirely of '0' and '1'
 	* @return string
 	*/
-	public static function merge(array $strings)
+	public function merge(array $strings)
 	{
-		$lengths = array_map('strlen', $strings);
-		$len = max($lengths) - 1;
+		$this->strings = $strings;
+		$this->lengths = array_map('strlen', $this->strings);
+		$len = max($this->lengths) - 1;
 
 		while ($len > 0)
 		{
-			$heads = $tails = [];
-			foreach ($strings as $k => $string)
-			{
-				if ($lengths[$k] >= $len)
-				{
-					$head = substr($string, 0, $len);
-					$tail = substr($string, -$len);
-					$heads[$head][] = $k;
-					$tails[$tail][] = $k;
-				}
-			}
-
-			$redo = false;
-			foreach (array_intersect_key($tails, $heads) as $tail => $tailKeys)
-			{
-				$headKeys = $heads[$tail];
-				foreach ($tailKeys as $tailKey)
-				{
-					if (!isset($strings[$tailKey]))
-					{
-						continue;
-					}
-
-					foreach ($headKeys as $headKey)
-					{
-						if ($tailKey === $headKey || !isset($strings[$headKey]))
-						{
-							continue;
-						}
-
-						$strings[$tailKey] .= substr($strings[$headKey], $len);
-						unset($strings[$headKey]);
-						$redo = true;
-
-						break;
-					}
-				}
-			}
-
-			if (!$redo)
+			if (!$this->matchSubstrings($len))
 			{
 				--$len;
 			}
 		}
 
-		return implode('', $strings);
+		return implode('', $this->strings);
+	}
+
+	/**
+	* Capture both ends of given length of strings being merged
+	*
+	* Will ignore strings that are too short
+	*
+	* @param  integer $len Substrings length
+	* @return void
+	*/
+	protected function captureSubstrings($len)
+	{
+		$this->heads = $this->tails = [];
+		foreach ($this->strings as $k => $string)
+		{
+			if ($this->lengths[$k] >= $len)
+			{
+				$head = substr($string, 0, $len);
+				$tail = substr($string, -$len);
+				$this->heads[$head][] = $k;
+				$this->tails[$tail][] = $k;
+			}
+		}
+	}
+
+	/**
+	* Match compatible strings and merge them together
+	*
+	* The algorithm matches strings that overlap each other. For example, "10111" and "11100" will
+	* be matched at length 3 because the last 3 characters of the first string match the first 3
+	* characters of the second string. The second string will be removed
+	*
+	* @param  integer $len Substrings length
+	* @return bool         Whether any strings were merged
+	*/
+	protected function matchSubstrings($len)
+	{
+		$this->captureSubstrings($len);
+
+		$merged = false;
+		foreach (array_intersect_key($this->tails, $this->heads) as $tail => $tailKeys)
+		{
+			$headKeys = $this->heads[$tail];
+			foreach ($tailKeys as $tailKey)
+			{
+				if (!isset($this->strings[$tailKey]))
+				{
+					continue;
+				}
+
+				foreach ($headKeys as $headKey)
+				{
+					if ($tailKey === $headKey || !isset($this->strings[$headKey]))
+					{
+						continue;
+					}
+
+					$this->strings[$tailKey] .= substr($this->strings[$headKey], $len);
+					unset($this->strings[$headKey]);
+					$merged = true;
+
+					break;
+				}
+			}
+		}
+
+		return $merged;
 	}
 
 	/**

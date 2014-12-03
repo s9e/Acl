@@ -12,6 +12,11 @@ use InvalidArgumentException;
 class Builder
 {
 	/**
+	* @var BitPacker
+	*/
+	public $bitPacker;
+
+	/**
 	* @var array List of rules directly associated with this ACL
 	*/
 	protected $rules = [
@@ -23,6 +28,16 @@ class Builder
 	* @var array List of settings directly associated with this ACL, grouped by action name
 	*/
 	protected $settings = [];
+
+	/**
+	* Constructor
+	*
+	* @return void
+	*/
+	public function __construct()
+	{
+		$this->bitPacker = new BitPacker;
+	}
 
 	/**
 	* Add a rule
@@ -151,13 +166,13 @@ class Builder
 		}
 
 		$actionOffsets  = [];
-		$mergedBitfield = BitPacker::merge($bitfields);
+		$mergedBitfield = $this->bitPacker->merge($bitfields);
 		foreach ($bitfields as $action => $bitfield)
 		{
 			$actionOffsets[$action] = strpos($mergedBitfield, $bitfield);
 		}
 
-		return [BitPacker::toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
+		return [$this->bitPacker->toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
 	}
 
 	/**

@@ -15,7 +15,8 @@ class BitPackerTest extends PHPUnit_Framework_TestCase
 	*/
 	public function testMerge($strings, $expected)
 	{
-		$actual = BitPacker::merge($strings);
+		$packer = new BitPacker;
+		$actual = $packer->merge($strings);
 		$this->assertSame($expected, $actual);
 
 		foreach ($strings as $string)
