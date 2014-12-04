@@ -106,17 +106,8 @@ class Builder
 			$grant    = array_intersect_key($this->rules['grant'], array_flip($actions));
 			$require  = array_intersect_key($this->rules['require'], array_flip($actions));
 			$settings = array_intersect_key($this->settings, array_flip($actions));
-			$config   = $this->finalize(new Matrix($settings, $grant, $require));
 
-			if (!$config)
-			{
-				continue;
-			}
-
-			foreach ($actions as $action)
-			{
-				$acl[$action] =& $config;
-			}
+			$acl += $this->finalize(new Matrix($settings, $grant, $require));
 		}
 		ksort($acl);
 
@@ -151,7 +142,7 @@ class Builder
 	* @see Acl::getBitNumber
 	*
 	* @param  Matrix $matrix
-	* @return array<array>|bool FALSE if no permission was granted, TRUE if every permission was granted globally or an array containing a bitfield, an array containing the offsets of each action in the bitfield, and an array containing the offsets of each scope value for each dimension
+	* @return array<array|bool> Action names as keys. Values are either TRUE for global permissions or for local permission an array containing: a bitfield, an array containing the offsets of each action in the bitfield, and an array containing the offsets of each scope value for each dimension
 	*/
 	protected function finalize(Matrix $matrix)
 	{
@@ -162,16 +153,13 @@ class Builder
 				return (strpos($bitfield, '1') !== false);
 			}
 		);
-		if (empty($bitfields))
-		{
-			return false;
-		}
+		$actions = array_keys($bitfields);
 
 		$scopeOffsets = $matrix->getOffsets();
 		if (empty($scopeOffsets))
 		{
 			// Global permissions can be represented as a boolean
-			return true;
+			return array_fill_keys($actions, true);
 		}
 
 		$actionOffsets  = [];
@@ -180,8 +168,15 @@ class Builder
 		{
 			$actionOffsets[$action] = strpos($mergedBitfield, $bitfield);
 		}
+		$config = [$this->bitPacker->toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
 
-		return [$this->bitPacker->toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
+		$acl = [];
+		foreach ($actions as $action)
+		{
+			$acl[$action] =& $config;
+		}
+
+		return $acl;
 	}
 
 	/**
