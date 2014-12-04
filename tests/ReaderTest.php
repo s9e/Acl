@@ -4,6 +4,7 @@ namespace s9e\TextFormatter\Tests;
 
 use PHPUnit_Framework_TestCase;
 use s9e\Acl\Builder;
+use s9e\Acl\Reader;
 
 /**
 * @covers s9e\Acl\Reader
@@ -173,5 +174,23 @@ class ReaderTest extends PHPUnit_Framework_TestCase
 		         ->method('getAclAttributes')
 		         ->will($this->returnValue(['id' => 456]));
 		$this->assertFalse($reader->isAllowed('foo', $resource));
+	}
+
+	/**
+	* @testdox Correctly handles actions whose offset has been optimized away
+	*/
+	public function testActionOffsetOptimizedAway()
+	{
+		$reader = new Reader([
+			'foo' => [
+				"\6",
+				[],
+				['id' => ['' => 1, 123 => 2]]
+			]
+		]);
+		$this->assertFalse($reader->isAllowed('foo'));
+		$this->assertTrue($reader->isAllowed('foo', ['id' => 123]));
+		$this->assertTrue($reader->isAllowed('foo', ['id' => $reader::WILDCARD]));
+		$this->assertFalse($reader->isAllowed('foo', ['id' => 456]));
 	}
 }

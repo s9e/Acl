@@ -168,8 +168,12 @@ class Builder
 		{
 			$actionOffsets[$action] = strpos($mergedBitfield, $bitfield);
 		}
-		$config = [$this->bitPacker->toBin($mergedBitfield), $actionOffsets, $scopeOffsets];
 
+		$config = [
+			$this->bitPacker->toBin($mergedBitfield),
+			array_filter($actionOffsets),
+			$scopeOffsets
+		];
 		$acl = [];
 		foreach ($actions as $action)
 		{

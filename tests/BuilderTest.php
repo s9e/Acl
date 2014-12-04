@@ -131,7 +131,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 			[
 				'foo' => [
 					"\6",
-					['foo' => 0],
+					[],
 					['id'  => ['' => 1, 123 => 2]]
 				]
 			],
@@ -238,7 +238,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				['publish' => [['allow', ['cat' => 1]]]],
 				[],
 				[
-					'publish' => ["\6", ['publish' => 0], ['cat' => ['' => 1, 1 => 2]]]
+					'publish' => ["\6", [], ['cat' => ['' => 1, 1 => 2]]]
 				]
 			],
 			[
@@ -265,12 +265,12 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				[
 					'publish' => [
 						"\016",
-						['publish' => 1, 'edit' => 0],
+						['publish' => 1],
 						['cat' => ['' => 1, 123 => 2]]
 					],
 					'edit' => [
 						"\016",
-						['publish' => 1, 'edit' => 0],
+						['publish' => 1],
 						['cat' => ['' => 1, 123 => 2]]
 					]
 				]
@@ -285,12 +285,12 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				[
 					'publish' => [
 						"\6",
-						['publish' => 0, 'edit' => 0],
+						[],
 						['cat' => ['' => 1, 123 => 2]]
 					],
 					'edit' => [
 						"\6",
-						['publish' => 0, 'edit' => 0],
+						[],
 						['cat' => ['' => 1, 123 => 2]]
 					]
 				]
@@ -305,7 +305,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				[
 					'edit' => [
 						"\6",
-						['edit' => 0],
+						[],
 						['cat' => ['' => 1, 123 => 2]]
 					]
 				]
@@ -319,7 +319,7 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 				[
 					'edit' => [
 						"\6",
-						['edit' => 0],
+						[],
 						['cat' => ['' => 1, 123 => 2]]
 					],
 					'publish' => true
