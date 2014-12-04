@@ -68,8 +68,8 @@ class MatrixTest extends PHPUnit_Framework_TestCase
 			$this->aclToArray($expectedBitfields, $expectedOffsets),
 			$this->aclToArray($matrix->getBitfields(), $matrix->getOffsets())
 		);
-		$this->assertSame($expectedOffsets, $matrix->getOffsets());
-		$this->assertSame($expectedBitfields, $matrix->getBitfields());
+		$this->assertEquals($expectedOffsets, $matrix->getOffsets());
+		$this->assertEquals($expectedBitfields, $matrix->getBitfields());
 	}
 
 	public function getSolveTests()
