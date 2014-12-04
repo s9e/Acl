@@ -310,6 +310,21 @@ class BuilderTest extends PHPUnit_Framework_TestCase
 					]
 				]
 			],
+			[
+				[
+					'edit'    => [['allow', ['cat' => 123]]],
+					'publish' => [['allow', []]]
+				],
+				[],
+				[
+					'edit' => [
+						"\6",
+						['edit' => 0],
+						['cat' => ['' => 1, 123 => 2]]
+					],
+					'publish' => true
+				]
+			],
 		];
 	}
 }
