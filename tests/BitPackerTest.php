@@ -1,6 +1,6 @@
 <?php
 
-namespace s9e\TextFormatter\Tests;
+namespace s9e\Acl\Tests;
 
 use PHPUnit_Framework_TestCase;
 use s9e\Acl\BitPacker;
